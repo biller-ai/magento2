@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/webhook/transfer" method="POST">
+        <service class="Biller\Connect\Api\Webapi\WebhookInterface" method="processTransfer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+	</route>
+    <route url="/V1/webhook/admin-transfer" method="POST">
+        <service class="Biller\Connect\Api\Webapi\WebhookInterface" method="processAdminTransfer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/biller/order-request" method="POST">
+        <service class="Biller\Connect\Api\Webapi\CheckoutInterface" method="orderRequest"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/biller/check-order-placed/:token" method="GET">
+        <service class="Biller\Connect\Api\Webapi\PendingInterface" method="checkOrderPlaced"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>
+

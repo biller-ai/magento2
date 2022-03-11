@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="connection" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+           showInStore="1">
+        <label>Credentials</label>
+        <field id="webshop_uid" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+               showInStore="0">
+            <label>Webshop UID</label>
+            <config_path>payment/biller_gateway/webshop_uid</config_path>
+        </field>
+        <field id="mode" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1"
+               showInStore="0">
+            <label>Mode</label>
+            <source_model>Biller\Connect\Model\Config\Source\Mode</source_model>
+            <config_path>payment/biller_gateway/mode</config_path>
+        </field>
+        <field id="sandbox_username" translate="label" type="text" sortOrder="50" showInDefault="1"
+               showInWebsite="1" showInStore="0">
+            <label>Username (Sandbox)</label>
+            <depends>
+                <field id="mode">sandbox</field>
+            </depends>
+            <config_path>payment/biller_gateway/sandbox_username</config_path>
+        </field>
+        <field id="sandbox_password" translate="label" type="obscure" sortOrder="60" showInDefault="1"
+               showInWebsite="1" showInStore="0">
+            <label>Password (Sandbox)</label>
+            <comment model="Biller\Connect\Model\Adminhtml\Comment\EncryptedHint" />
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <depends>
+                <field id="mode">sandbox</field>
+            </depends>
+            <config_path>payment/biller_gateway/sandbox_password</config_path>
+        </field>
+        <field id="username" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
+               showInStore="0">
+            <label>Username (Live)</label>
+            <depends>
+                <field id="mode">live</field>
+            </depends>
+            <config_path>payment/biller_gateway/username</config_path>
+        </field>
+        <field id="password" translate="label" type="obscure" sortOrder="90" showInDefault="1" showInWebsite="1"
+               showInStore="0">
+            <label>Password (Live)</label>
+            <comment model="Biller\Connect\Model\Adminhtml\Comment\EncryptedHint" />
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <depends>
+                <field id="mode">live</field>
+            </depends>
+            <config_path>payment/biller_gateway/password</config_path>
+        </field>
+        <field id="button" translate="label" type="button" sortOrder="100" showInDefault="1"
+               showInWebsite="0" showInStore="1">
+            <label/>
+            <frontend_model>Biller\Connect\Block\Adminhtml\System\Config\Button\Credentials</frontend_model>
+            <depends>
+                <field id="active">1</field>
+            </depends>
+        </field>
+    </group>
+</include>

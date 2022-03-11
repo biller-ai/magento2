@@ -1,0 +1,105 @@
+<!--
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
+        <label class="label" data-bind="attr: {'for': getCode()}">
+            <span data-bind="text: getTitle()"></span>
+        </label>
+    </div>
+
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <div class="payment-method-billing-address">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+
+            <fieldset class="fieldset payment method" data-bind='attr: {id: "payment_form_" + getCode()}'>
+                <div class="biller-data">
+                    <div class="field field-text required">
+                        <label for="biller_company_name" class="label">
+                            <span><!-- ko i18n: 'Company Name'--><!-- /ko --><span class="required-icon">*</span></span>
+                        </label>
+                        <div class="control">
+                            <input type="text"
+                                   id="biller_company_name"
+                                   name="payment[company_name]"
+                                   data-validate='{"required":true}'
+                                   data-bind='
+                                attr: {title: $t("Company Name")},
+                                value: getCompanyName()'
+                                   class="input-text"
+                            />
+                        </div>
+                    </div>
+                    <div class="field field-text">
+                        <label for="biller_registration_number" class="label">
+                            <span>
+                                <!-- ko i18n: 'Registration Number'--><!-- /ko -->
+                            </span>
+                            <span class="sub_label">
+                                <!-- ko i18n: '(recommended)'--><!-- /ko -->
+                            </span>
+                        </label>
+                        <div class="control">
+                            <input type="text"
+                                   id="biller_registration_number"
+                                   name="payment[registration_number]"
+                                   data-validate='{"required":false}'
+                                   data-bind='
+                                attr: {title: $t("Registration Number")},
+                                value: getRegistrationNumber()'
+                                   class="input-text"/>
+                        </div>
+                    </div>
+                    <div class="field field-text">
+                        <label for="biller_vat_number" class="label">
+                            <span><!-- ko i18n: 'Vat Number'--><!-- /ko --></span>
+                            <span class="sub_label">
+                                <!-- ko i18n: '(optional)'--><!-- /ko -->
+                            </span>
+                        </label>
+                        <div class="control">
+                            <input type="text"
+                                   id="biller_vat_number"
+                                   name="payment[vat_number]"
+                                   data-validate='{"required":false}'
+                                   data-bind='
+                                attr: {title: $t("Vat Number")},
+                                value: getVatNumber()'
+                                   class="input-text"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="actions-toolbar">
+                <div class="primary">
+                    <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                            click: placeOrder,
+                            attr: {title: $t('Place Order')}">
+                        <span data-bind="i18n: 'Place Order'"></span>
+                    </button>
+                </div>
+                <br><br>
+            </div>
+    </div>
+    <div class="checkout-agreements-block">
+        <!-- ko foreach: $parent.getRegion('before-place-order') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+    </div>
+</div>
+

@@ -1,0 +1,51 @@
+<?php
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/**
+ * @var \Magento\Payment\Block\Adminhtml\Transparent\Form $block
+ */
+$code = $block->escapeHtml($block->getMethodCode());
+?>
+    <fieldset
+        class="admin__fieldset payment-method"
+        id="payment_form_<?= /* @noEscape */ $code ?>"
+        data-mage-init='{"validation":[]}'
+    >
+        <div class="admin__field _required">
+            <label class="admin__field-label" for="<?= /* @noEscape */ $code ?>_company_name">
+                <span><?= $block->escapeHtml(__('Company Name')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <input type="text" id="<?= /* @noEscape */ $code ?>_company_name" name="payment[company_name]"
+                       title="<?= $block->escapeHtml(__('Company Name')) ?>"
+                       class="admin__control-text"
+                       value="<?= /* @noEscape */ $block->getInfoData('company_name') ?>"
+                       data-validate='{required:true}'/>
+            </div>
+        </div>
+        <div class="field-number admin__field">
+            <label class="admin__field-label" for="<?= /* @noEscape */ $code ?>_registration_number">
+                <span><?= $block->escapeHtml(__('Registration Number')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <input type="text" id="<?= /* @noEscape */ $code ?>_company_name" name="payment[registration_number]"
+                       title="<?= $block->escapeHtml(__('Registration Number')) ?>"
+                       class="admin__control-text"
+                       value="<?= /* @noEscape */ $block->getInfoData('registration_number') ?>"/>
+            </div>
+        </div>
+        <div class="field-number admin__field">
+            <label class="admin__field-label" for="<?= /* @noEscape */ $code ?>_vat_number">
+                <span><?= $block->escapeHtml(__('Vat Number')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <input type="text" id="<?= /* @noEscape */ $code ?>_company_name" name="payment[vat_number]"
+                       title="<?= $block->escapeHtml(__('Vat Number')) ?>"
+                       class="admin__control-text"
+                       value="<?= /* @noEscape */ $block->getInfoData('vat_number') ?>"/>
+            </div>
+        </div>
+    </fieldset>

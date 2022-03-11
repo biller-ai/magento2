@@ -1,0 +1,38 @@
+type Mutation {
+    billerPlaceOrderRequest(input: BillerPaymentDataInput): BillerPaymentDataOutput @resolver(class: "\\Biller\\Connect\\GraphQL\\Resolver\\BillerPlaceOrderRequest")
+}
+
+type Query {
+    billerProcessReturn(cart_id: String!): BillerProcessReturnOutput @resolver(class: "\\Biller\\Connect\\GraphQL\\Resolver\\BillerProcessReturn")
+}
+
+input BillerPaymentDataInput {
+    cart_id: String!
+    company_info: BillerPaymentInfoData!
+    urls: BillerRedirectUrls
+}
+
+input BillerPaymentInfoData {
+    company_name: String!
+    registration_number: String
+    vat_number: String
+}
+
+input BillerRedirectUrls {
+    success_url: String!
+    error_url: String!
+    cancel_url: String!
+    pending_url: String!
+}
+
+type BillerPaymentDataOutput {
+    success: Boolean!
+    redirect_url: String
+    message: String
+}
+
+type BillerProcessReturnOutput {
+    success: Boolean!
+    status: String!
+    message: String
+}

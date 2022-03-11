@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="biller" translate="label" sortOrder="210" class="biller-tab">
+            <label>Biller</label>
+        </tab>
+        <section id="biller_connect" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Biller</label>
+            <tab>biller</tab>
+            <resource>Biller_Connect::config</resource>
+            <include path="Biller_Connect::system/branding.xml"/>
+            <include path="Biller_Connect::system/general.xml"/>
+            <include path="Biller_Connect::system/connection.xml"/>
+            <include path="Biller_Connect::system/method.xml"/>
+            <include path="Biller_Connect::system/settings.xml"/>
+            <include path="Biller_Connect::system/debug.xml"/>
+        </section>
+    </system>
+</config>

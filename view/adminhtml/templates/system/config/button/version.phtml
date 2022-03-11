@@ -1,0 +1,25 @@
+<?php
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+use Biller\Connect\Block\Adminhtml\System\Config\Button\VersionCheck;
+
+/**
+ * @see \Biller\Connect\Block\Adminhtml\System\Config\Button\VersionCheck
+ * @var VersionCheck $block
+ */
+?>
+<div class="mm-biller-result_version-wrapper"
+     data-mm-biller-endpoind-url="<?= $block->escapeUrl($block->getVersionCheckUrl()) ?>">
+    <span><?= $block->escapeHtml($block->getVersion()); ?></span>
+    <?= $block->getButtonHtml() ?>
+    <div id="mm-biller-result_version"></div>
+    <div id="mm-biller-result_changelog-modal"
+         data-mm-biller-endpoind-url="<?= $block->escapeUrl($block->getChangeLogUrl()) ?>">
+        <div id="mm-biller-result_changelog">
+            <ul class="result"></ul>
+        </div>
+    </div>
+</div>

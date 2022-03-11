@@ -1,0 +1,44 @@
+<?php
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+<?php
+/** @var $block Magento\Framework\View\Element\Template */
+/** @var $viewModel Biller\Connect\ViewModel\Checkout\Pending */
+$viewModel = $block->getData('view_model');
+?>
+
+<div class="checkout-pending">
+    <p>
+        <?= $block->escapeHtml(__(
+            'Your payment has been accepted by Biller. We are redirecting you to the order confirmation page ' .
+            'but it might take an extra second.'
+        )) ?>
+    </p>
+    <div class="biller-loading" id="biller-loading">
+        <div class="redirect-block">
+            <h1><?= $block->escapeHtml(__('Refreshing...')); ?></h1>
+            <div class="loader"></div>
+        </div>
+    </div>
+    <div class="actions-toolbar" id="biller-refresh-button" style="display:none">
+        <div class="primary">
+            <a class="action primary refresh" href="<?= $block->escapeUrl($viewModel->getRefreshUrl()) ?>">
+                <span><?= $block->escapeHtml(__('Refresh')) ?></span>
+            </a>
+        </div>
+    </div>
+</div>
+<?php // phpcs:ignore Magento2.Legacy.PhtmlTemplate ?>
+<script type="text/x-magento-init">
+        {
+            ".checkout-pending": {
+                "Biller_Connect/js/pending": {
+                    "refreshUrl": "<?= $block->escapeHtml($viewModel->getRefreshUrl()) ?>",
+                    "checkUrl": "<?= $block->escapeHtml($viewModel->getCheckUrl()) ?>"
+                }
+            }
+        }
+</script>

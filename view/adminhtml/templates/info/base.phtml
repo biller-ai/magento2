@@ -1,0 +1,50 @@
+<?php
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/**
+ * @var \Biller\Connect\Block\Info\Base $block
+ * @see \Biller\Connect\Block\Info\Base
+ */
+?>
+<div class="biller-method">
+    <?= $block->escapeHtml($block->getMethod()->getTitle()); ?>
+    <table class="data-table admin__table-secondary">
+        <tbody>
+        <?php foreach ($block->getInfoData() as $k => $v): ?>
+            <tr>
+                <th>
+                    <?= $block->escapeHtml(__($k)); ?>
+                </th>
+                <?php if ($k == 'Status'): ?>
+                    <td>
+                        <span class="biller-transaction-status">
+                            <?= $block->escapeHtml($v); ?>
+                        </span>
+                        <button type="button" class="biller-fetch-status">
+                            <?= $block->escapeHtml(__('Update')); ?>
+                        </button>
+                    </td>
+                <?php else: ?>
+                    <td>
+                        <?= $block->escapeHtml($v); ?>
+                    </td>
+                <?php endif; ?>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+<?= $block->getChildHtml() ?>
+<script type="text/x-magento-init">
+    {
+        ".biller-method": {
+            "Biller_Connect/js/order/fetch-transaction-status": {
+                "endpoint": "<?= $block->escapeUrl($block->getUrl('biller/transaction/fetchStatus')); ?>",
+                "order_id": "<?= /* @noEscape */ $block->getOrderId(); ?>"
+            }
+        }
+    }
+</script>

@@ -1,0 +1,19 @@
+<?php
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+/**
+ * @var \Biller\Connect\Block\Info\Base $block
+ * @see \Biller\Connect\Block\Info\Base
+ */
+$title = $block->escapeHtml($block->getMethod()->getTitle());
+?>
+<dl class="payment-method">
+    <dt class="title">
+        <?= /* @noEscape */$title; ?>
+    </dt>
+</dl>
+<?= $block->getChildHtml() ?>

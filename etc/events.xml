@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_shipment_save_after">
+        <observer name="sales_order_shipment_after_biller"
+                  instance="Biller\Connect\Observer\SalesOrderShipmentAfter" />
+    </event>
+    <event name="payment_method_is_active">
+        <observer name="biller_check_downloadable" instance="Biller\Connect\Observer\CheckDownloadable" />
+    </event>
+</config>

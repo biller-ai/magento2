@@ -1,0 +1,30 @@
+<?php
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ *
+ * @var $block Biller\Connect\Block\Adminhtml\Magmodules\Header
+ */
+?>
+<div class="mm-biller-header">
+    <div class="">
+        <p class="mm-biller-header-text">
+            <strong>Invoicing with Biller.</strong><br>
+            An AI solution reshaping the way businesses buy and sell online.<br>
+            Biller takes care of invoicing so that you can take care of business.<br>
+            <span class="development">Developed by Magmodules.</span>
+        </p>
+    </div>
+    <div class="mm-biller-header-actions">
+        <a id="mm-biller-button_help" class="helpbutton" href="#"
+           target="_blank">
+            <i class="mm-biller-icon__question-circled"></i>
+            <span><?= $block->escapeUrl(__('Manual & Support')); ?></span>
+        </a>
+        <button id="mm-biller-button_test" title="<?= $block->escapeUrl(__('Run Self-test')); ?>"
+                type="button" class="action-default scalable">
+            <i class="mm-biller-icon__list-unordered-four"></i>
+            <span><?= $block->escapeUrl(__('Run Self-test')); ?></span>
+        </button>
+    </div>
+</div>

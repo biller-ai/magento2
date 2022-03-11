@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="settings" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1"
+           showInStore="1">
+        <label>Settings</label>
+        <field id="separate_housenumber" translate="label" type="select" sortOrder="10" showInDefault="1"
+               showInWebsite="1"
+               showInStore="1">
+            <label>Separate housenumber</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <comment><![CDATA[If you use the second 'street' field as a separate house-number field, enable this option.]]></comment>
+            <config_path>biller_connect/settings/separate_housenumber</config_path>
+        </field>
+        <field id="payment_link_duration" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1"
+               showInStore="1" canRestore="1">
+            <label>Payment Link Duration</label>
+            <source_model>Biller\Connect\Model\Config\Source\PaymentLinkDuration</source_model>
+            <comment><![CDATA[Time after which the link will be unavailable.]]></comment>
+            <config_path>biller_connect/settings/payment_link_duration</config_path>
+        </field>
+    </group>
+</include>

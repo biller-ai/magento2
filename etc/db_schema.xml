@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Copyright © Magmodules.eu. All rights reserved.
+  ~ See COPYING.txt for license details.
+  -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="biller_transaction" engine="innodb" resource="default" comment="Biller Transaction Table">
+        <column name="entity_id"
+                xsi:type="int"
+                identity="true"
+                nullable="false"
+                unsigned="true"
+                comment="Entity ID"/>
+        <column name="quote_id"
+                xsi:type="int"
+                padding="10"
+                nullable="false"
+                unsigned="true"
+                comment="Quote Id"/>
+        <column name="order_id"
+                xsi:type="int"
+                nullable="true"
+                unsigned="true"
+                comment="Order Id"/>
+        <column name="token"
+                xsi:type="varchar"
+                length="128"
+                nullable="false"
+                comment="Token"/>
+        <column name="uuid"
+                xsi:type="varchar"
+                length="128"
+                nullable="true"
+                default="NULL"
+                comment="Uuid from Response"/>
+        <column name="status"
+                xsi:type="varchar"
+                length="128"
+                nullable="true"
+                default="NULL"
+                comment="Status"/>
+        <column name="invoice_uuid"
+                xsi:type="varchar"
+                length="128"
+                nullable="true"
+                default="NULL"
+                comment="Invoice Uuid"/>
+        <column name="payment_url"
+                xsi:type="varchar"
+                length="128"
+                nullable="true"
+                default="NULL"
+                comment="Payment Url"/>
+        <column name="is_locked"
+                xsi:type="smallint"
+                unsigned="true"
+                nullable="true"
+                identity="false"
+                comment="Is Used For Create Order"/>
+        <column name="created_at"
+                xsi:type="timestamp"
+                default="CURRENT_TIMESTAMP"
+                nullable="false"
+                comment="Created At"/>
+        <column name="updated_at"
+                xsi:type="timestamp"
+                on_update="true"
+                default="CURRENT_TIMESTAMP"
+                nullable="false"
+                comment="Updated At"/>
+        <constraint referenceId="PRIMARY" xsi:type="primary">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint
+                xsi:type="foreign"
+                referenceId="BILLER_TRANSACTION_QUOTE_ID"
+                table="biller_transaction"
+                column="quote_id"
+                referenceTable="quote"
+                referenceColumn="entity_id"
+                onDelete="CASCADE"
+        />
+    </table>
+</schema>

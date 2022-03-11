@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <biller_connect>
+            <general>
+                <version>v1.3.2</version>
+                <enable>0</enable>
+                <debug>0</debug>
+            </general>
+            <settings>
+                <payment_link_duration>900</payment_link_duration>
+                <order_request_label>Webshop</order_request_label>
+            </settings>
+        </biller_connect>
+        <payment>
+            <biller_gateway>
+                <active>0</active>
+                <model>BillerFacade</model>
+                <order_status>pending</order_status>
+                <title>Business Invoice - 30 days</title>
+                <payment_action>authorize</payment_action>
+                <mode>sandbox</mode>
+                <can_use_checkout>1</can_use_checkout>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_void>1</can_void>
+                <can_cancel>1</can_cancel>
+                <can_use_internal>1</can_use_internal>
+            </biller_gateway>
+        </payment>
+    </default>
+</config>

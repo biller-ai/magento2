@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magmodules.eu. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Biller\Connect\Api\Config\RepositoryInterface"
+                type="Biller\Connect\Model\Config\Repository"/>
+    <preference for="Biller\Connect\Api\Log\RepositoryInterface"
+                type="Biller\Connect\Model\Log\Repository"/>
+    <preference for="Biller\Connect\Api\Selftest\RepositoryInterface"
+                type="Biller\Connect\Model\Selftest\Repository"/>
+    <preference for="Biller\Connect\Api\Webapi\WebhookInterface"
+                type="Biller\Connect\Model\Webapi\Webhook" />
+    <preference for="Biller\Connect\Api\Webapi\CheckoutInterface"
+                type="Biller\Connect\Model\Webapi\Checkout" />
+    <preference for="Biller\Connect\Api\Webapi\PendingInterface"
+                type="Biller\Connect\Model\Webapi\Pending" />
+    <preference for="Biller\Connect\Api\Transaction\Data\DataInterface"
+                type="Biller\Connect\Model\Transaction\DataModel" />
+    <preference for="Biller\Connect\Api\Transaction\RepositoryInterface"
+                type="Biller\Connect\Model\Transaction\Repository" />
+    <preference for="Biller\Connect\Api\Transaction\Data\SearchResultsInterface"
+                type="Magento\Framework\Api\SearchResults"/>
+
+    <type name="Biller\Connect\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Biller\Connect\Logger\ErrorLogger">
+        <arguments>
+            <argument name="name" xsi:type="string">BillerError</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Biller\Connect\Logger\Handler\Error</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Biller\Connect\Logger\DebugLogger">
+        <arguments>
+            <argument name="name" xsi:type="string">BillerDebug</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Biller\Connect\Logger\Handler\Debug</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Biller\Connect\Model\Selftest\Repository">
+        <arguments>
+            <argument name="testList" xsi:type="array">
+                <item name="phpVersion" xsi:type="object">Biller\Connect\Service\Test\PhpVersion</item>
+                <item name="extensionStatus" xsi:type="object">Biller\Connect\Service\Test\ExtensionStatus</item>
+                <item name="phpExtensions" xsi:type="object">Biller\Connect\Service\Test\PhpExtensions</item>
+                <item name="magentoVersion" xsi:type="object">Biller\Connect\Service\Test\MagentoVersion</item>
+                <item name="extensionVersion" xsi:type="object">Biller\Connect\Service\Test\ExtensionVersion</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Biller\Connect\Console\Command\Selftest">
+        <arguments>
+            <argument name="selftestRepository" xsi:type="object">Biller\Connect\Model\Selftest\Repository\Proxy
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Command line block start -->
+    <type name="Biller\Connect\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="BillerSelftest" xsi:type="object">Biller\Connect\Console\Command\Selftest</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Command line block end -->
+
+    <virtualType name="BillerFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Biller\Connect\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Biller\Connect\Block\Info\Base</argument>
+            <argument name="valueHandlerPool" xsi:type="object">BillerValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">BillerCommandPool</argument>
+            <argument name="validatorPool" xsi:type="object">BillerValidatorPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">BillerInitializeCommand</item>
+<!--                <item name="capture" xsi:type="string">BillerCaptureCommand</item>-->
+                <item name="cancel" xsi:type="string">BillerCancelCommand</item>
+                <item name="void" xsi:type="string">BillerCancelCommand</item>
+                <item name="refund" xsi:type="string">BillerRefundCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerInitializeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">BillerInitializeRequestBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Biller\Connect\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Biller\Connect\Gateway\Http\Client\GenericClient</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerInitializeRequestBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite" />
+
+    <virtualType name="BillerCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Biller\Connect\Gateway\Request\CaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Biller\Connect\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Biller\Connect\Gateway\Http\Client\GenericClient</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerCancelCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Biller\Connect\Gateway\Request\CancelRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Biller\Connect\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Biller\Connect\Gateway\Http\Client\GenericClient</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Biller\Connect\Gateway\Request\RefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Biller\Connect\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Biller\Connect\Gateway\Http\Client\GenericClient</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">BillerConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">BillerConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BillerConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Biller\Connect\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Biller validators infrastructure -->
+    <virtualType name="BillerValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="availability" xsi:type="string">Biller\Connect\Gateway\Validator\AvailabilityValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Sales\Controller\Adminhtml\Order\Invoice\Save">
+        <plugin name="biller_invoice_save"
+                type="Biller\Connect\Plugin\Controller\Adminhtml\Order\Invoice\SavePlugin"/>
+    </type>
+    <type name="Magento\Shipping\Controller\Adminhtml\Order\Shipment\Save">
+        <plugin name="biller_shipment_save"
+                type="Biller\Connect\Plugin\Controller\Adminhtml\Order\Shipment\SavePlugin"/>
+    </type>
+    <type name="Magento\Sales\Controller\Adminhtml\Order\Creditmemo\Save">
+        <plugin name="biller_creditmemo_save"
+                type="Biller\Connect\Plugin\Controller\Adminhtml\Order\Creditmemo\SavePlugin"/>
+    </type>
+
+    <type name="Magento\Sales\Block\Adminhtml\Order\View">
+        <plugin name="biller_change_buttons"
+                type="Biller\Connect\Plugin\Block\Adminhtml\Order\View"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment">
+        <plugin name="biller_payment_cancel"
+                type="Biller\Connect\Plugin\Model\Order\PaymentPlugin"/>
+    </type>
+    <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
+        <plugin name="biller_guest_payment_information"
+                type="Biller\Connect\Plugin\Model\GuestPaymentInformationManagementPlugin"/>
+    </type>
+    <type name="Magento\Sales\Api\CreditmemoManagementInterface">
+        <plugin name="biller_creditmemo_refund"
+                type="Biller\Connect\Plugin\Api\CreditmemoManagementPlugin"/>
+    </type>
+    <type name="Magento\Quote\Model\ChangeQuoteControl">
+        <plugin name="biller_quote_control"
+                type="Biller\Connect\Plugin\Model\Quote\ChangeQuoteControlPlugin"/>
+    </type>
+</config>
