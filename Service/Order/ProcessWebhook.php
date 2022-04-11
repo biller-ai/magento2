@@ -186,12 +186,7 @@ class ProcessWebhook
      */
     private function placeOrder(CartInterface $quote, string $extOrderId, array $amount, string $email)
     {
-        if ($quote->getCustomerEmail() == null) {
-            $quote->setCustomerEmail($email);
-        }
-        $quote->setIsActive(true);
-        $this->quoteRepository->save($quote);
-
+        $quote = $this->prepareQuote($quote, $email);
         $orderId = $this->cartManagement->placeOrder($quote->getId());
         $order = $this->orderRepository->get($orderId);
 
@@ -204,6 +199,29 @@ class ProcessWebhook
         $this->orderCommentHistory->add($order, __($message, $this->formatPrice($amount)), false);
 
         return $order->getEntityId();
+    }
+
+    /**
+     * Make sure the quote is valid for order placement.
+     *
+     * Force setCustomerIsGuest; see issue: https://github.com/magento/magento2/issues/23908
+     *
+     * @param CartInterface $quote
+     * @param string        $email
+     *
+     * @return CartInterface
+     */
+    private function prepareQuote(CartInterface $quote, string $email): CartInterface
+    {
+        if ($quote->getCustomerEmail() == null) {
+            $quote->setCustomerEmail($email);
+        }
+
+        $quote->setCustomerIsGuest($quote->getCustomerId() == null);
+        $quote->setIsActive(true);
+        $this->quoteRepository->save($quote);
+
+        return $quote;
     }
 
     /**
