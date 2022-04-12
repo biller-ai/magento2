@@ -30,7 +30,7 @@ class Adapter
      * API URLs pattern
      */
     public const API_URL = [
-        'live' => 'https://api.biller.ai/v1/api/%s/',
+        'live'    => 'https://api.biller.ai/v1/api/%s/',
         'sandbox' => 'https://api.sandbox.biller.ai/v1/api/%s/'
     ];
 
@@ -80,11 +80,11 @@ class Adapter
     /**
      * Adapter constructor.
      *
-     * @param CurlFactory $httpClientFactory
-     * @param Json $json
+     * @param CurlFactory      $httpClientFactory
+     * @param Json             $json
      * @param ConfigRepository $configProvider
-     * @param LogRepository $logRepository
-     * @param HttpCode $httpCode
+     * @param LogRepository    $logRepository
+     * @param HttpCode         $httpCode
      */
     public function __construct(
         CurlFactory $httpClientFactory,
@@ -104,7 +104,7 @@ class Adapter
      * @param       $entry
      * @param       $action
      * @param array $data
-     * @param int $storeId
+     * @param int   $storeId
      *
      * @return array|bool|float|int|mixed|string|null
      * @throws LocalizedException
@@ -121,7 +121,10 @@ class Adapter
             return $token;
         }
 
-        $this->logRepository->addDebugLog(sprintf('Api call: %s', $action), $data);
+        $this->logRepository->addDebugLog(
+            sprintf('API CALL: [%s]', $action),
+            $data
+        );
 
         $httpClient = $this->getClient();
         $httpClient->write(
@@ -135,20 +138,12 @@ class Adapter
         $response = $httpClient->read();
         $status = Zend_Http_Response::extractCode($response);
         $body = Zend_Http_Response::extractBody($response);
+        $result = $this->isResultJson($body) ? $this->json->unserialize($body) : $body;
 
-        try {
-            $result = $this->json->unserialize($body);
-            $this->logRepository->addDebugLog(
-                sprintf('API [%s => %s] (status: %s)', $action, $this->formatUrl($entry), $status),
-                $result
-            );
-        } catch (\Exception $exception) {
-            $this->logRepository->addErrorLog(
-                sprintf('API [%s => %s] (status: %s)', $action, $this->formatUrl($entry), $status),
-                $exception->getMessage()
-            );
-            throw new LocalizedException(__($exception->getMessage()));
-        }
+        $this->logRepository->addDebugLog(
+            sprintf('API RESULT [%s => %s] (status: %s)', $action, $this->formatUrl($entry), $status),
+            $result
+        );
 
         if ($status >= 200 && $status < 300) {
             return $result;
@@ -188,18 +183,18 @@ class Adapter
         $response = $httpClient->read();
         $status = Zend_Http_Response::extractCode($response);
         $body = Zend_Http_Response::extractBody($response);
-        $result = $this->json->unserialize($body);
+        $result = $this->isResultJson($body) ? $this->json->unserialize($body) : $body;
 
-        if ($status == 401) {
-            throw new AuthenticationException($this->formatApiError($result, $status));
+        switch ($status) {
+            case $status >= 200 && $status < 300:
+                $token = $result['access'] ?? '';
+                $this->token[$this->storeId] = (string)$token;
+                return $this->token[$this->storeId];
+            case 401:
+                throw new AuthenticationException($this->formatApiError($result, $status));
+            default:
+                throw new LocalizedException($this->formatApiError($result, $status));
         }
-        if ($status >= 200 && $status < 300) {
-            $token = $result['access'] ?? '';
-            $this->token[$this->storeId] = (string)$token;
-            return $this->token[$this->storeId];
-        }
-
-        throw new LocalizedException($this->formatApiError($result, $status));
     }
 
     /**
@@ -244,6 +239,7 @@ class Adapter
 
     /**
      * @param string|null $token
+     *
      * @return array
      */
     private function getHeaders(?string $token = null): array
@@ -256,44 +252,46 @@ class Adapter
     }
 
     /**
-     * @param $result
+     * @param $string
      *
+     * @return bool
+     */
+    private function isResultJson($string): bool
+    {
+        return is_string($string)
+            && is_array(json_decode($string, true))
+            && (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /**
+     * @param $result
      * @param $status
+     *
      * @return Phrase
      */
     private function formatApiError($result, $status): Phrase
     {
-        $errorMsg = $this->json->serialize($result);
+        $this->logRepository->addErrorLog(
+            sprintf('API ERROR [%s]', $status),
+            $result
+        );
 
-        if (!empty($result['detail'])) {
-            $errorMsg = $result['detail'];
-            $returnMsg = __('Biller: %1', $result['detail']);
-        } else {
-            $returnMsg = __('Biller: %1', $this->httpCode->execute((int)$status));
+        if (is_array($result) && !empty($result['detail'])) {
+            return __('Unable to process payment: %1.', $result['detail']);
         }
 
         if ($status == 400) {
             $foundIssues = [];
-            foreach ($result as $node => $issues) {
-                foreach ($issues as $field => $issue) {
-                    $foundIssues[] = sprintf(
-                        '%s (%s): %s',
-                        ucwords(str_replace('_', ' ', $field)),
-                        ucwords(str_replace('_', ' ', $node)),
-                        implode($issue)
-                    );
+            foreach ($result as $issues) {
+                foreach ($issues as $issue) {
+                    $foundIssues[] = is_array($issue) ? implode(' ', $issue) : $issue;
                 }
             }
             if ($foundIssues) {
-                $returnMsg = __('Biller: %1', implode(' | ', $foundIssues));
+                return __('Unable to process payment: %1.', implode(' ', $foundIssues));
             }
         }
 
-        $this->logRepository->addErrorLog(
-            sprintf('API Status %s', $status),
-            $errorMsg
-        );
-
-        return $returnMsg;
+        return __('Unable to process payment.');
     }
 }

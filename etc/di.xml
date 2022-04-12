@@ -155,10 +155,15 @@
     </virtualType>
 
     <!-- Biller validators infrastructure -->
+    <virtualType name="BillerCurrencyValidator" type="Biller\Connect\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">BillerConfig</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="BillerValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
         <arguments>
             <argument name="validators" xsi:type="array">
-                <item name="availability" xsi:type="string">Biller\Connect\Gateway\Validator\AvailabilityValidator</item>
+                <item name="currency" xsi:type="string">BillerCurrencyValidator</item>
             </argument>
         </arguments>
     </virtualType>

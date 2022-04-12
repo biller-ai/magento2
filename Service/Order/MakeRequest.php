@@ -196,7 +196,7 @@ class MakeRequest
             'order_lines' => $this->orderLines->fromQuote($quote),
             'external_webshop_uid' => $this->configProvider->getWebshopUid($quote->getStoreId()),
             'external_order_uid' => $quote->getReservedOrderId(),
-            'amount' => $quote->getGrandTotal() * 100,
+            'amount' => $quote->getBaseGrandTotal() * 100,
             'currency' => $quote->getBaseCurrencyCode(),
             'payment_link_duration' => $this->configProvider->getPaymentLinkDuration($quote->getStoreId()),
             'order_request_label' => $this->configProvider->getOrderRequestLabel($quote->getStoreId()),

@@ -35,6 +35,7 @@
                 <can_void>1</can_void>
                 <can_cancel>1</can_cancel>
                 <can_use_internal>1</can_use_internal>
+                <currency>EUR,DKK,GBP</currency>
             </biller_gateway>
         </payment>
     </default>

@@ -15,6 +15,8 @@ class BillerPlaceOrderRequestTest extends GraphQLTestCase
      * @magentoAppIsolation enabled
      * @magentoAppArea graphql
      * @magentoDataFixture Magento/Checkout/_files/simple_product.php
+     * @magentoConfigFixture default/currency/options/base EUR
+     * @magentoConfigFixture default_store currency/options/default EUR
      * @magentoConfigFixture default_store biller_connect/general/enable 1
      * @magentoConfigFixture default_store payment/biller_gateway/active 1
      */
@@ -62,6 +64,8 @@ class BillerPlaceOrderRequestTest extends GraphQLTestCase
      * @magentoAppArea graphql
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoDataFixture Magento/Checkout/_files/simple_product.php
+     * @magentoConfigFixture default/currency/options/base EUR
+     * @magentoConfigFixture default_store currency/options/default EUR
      * @magentoConfigFixture default_store biller_connect/general/enable 1
      * @magentoConfigFixture default_store payment/biller_gateway/active 1
      */
@@ -76,6 +80,8 @@ class BillerPlaceOrderRequestTest extends GraphQLTestCase
      * @magentoAppIsolation enabled
      * @magentoAppArea graphql
      * @magentoDataFixture Magento/Checkout/_files/simple_product.php
+     * @magentoConfigFixture default/currency/options/base EUR
+     * @magentoConfigFixture default_store currency/options/default EUR
      * @magentoConfigFixture default_store biller_connect/general/enable 1
      * @magentoConfigFixture default_store payment/biller_gateway/active 1
      */
