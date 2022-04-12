@@ -10,7 +10,7 @@
     <default>
         <biller_connect>
             <general>
-                <version>v1.3.2</version>
+                <version>v1.4.0</version>
                 <enable>0</enable>
                 <debug>0</debug>
             </general>
@@ -35,6 +35,7 @@
                 <can_void>1</can_void>
                 <can_cancel>1</can_cancel>
                 <can_use_internal>1</can_use_internal>
+                <currency>EUR,DKK,GBP</currency>
             </biller_gateway>
         </payment>
     </default>

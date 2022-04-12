@@ -94,7 +94,7 @@ class GetOrderLines
             ];
         }
 
-        if ($creditmemo->getShippingAmount() != 0) {
+        if ($creditmemo->getBaseShippingAmount() != 0) {
             $orderLines[] = [
                 'quantity' => 1,
                 'product_id' => self::SHIPPING_COST_LINE,
@@ -117,9 +117,9 @@ class GetOrderLines
     private function getProductPriceExclTax(QuoteItem $quoteItem): float
     {
         return round(
-            ($quoteItem->getRowTotal()
-                - $quoteItem->getDiscountAmount()
-                + $quoteItem->getDiscountTaxCompensationAmount())
+            ($quoteItem->getBaseRowTotal()
+                - $quoteItem->getBaseDiscountAmount()
+                + $quoteItem->getBaseDiscountTaxCompensationAmount())
             / $quoteItem->getQty() * 100
         );
     }
@@ -134,10 +134,10 @@ class GetOrderLines
     private function getProductPriceInclTax(QuoteItem $quoteItem): float
     {
         return round(
-            ($quoteItem->getRowTotal()
-                - $quoteItem->getDiscountAmount()
-                + $quoteItem->getTaxAmount()
-                + $quoteItem->getDiscountTaxCompensationAmount())
+            ($quoteItem->getBaseRowTotal()
+                - $quoteItem->getBaseDiscountAmount()
+                + $quoteItem->getBaseTaxAmount()
+                + $quoteItem->getBaseDiscountTaxCompensationAmount())
             / $quoteItem->getQty() * 100
         );
     }
@@ -151,8 +151,8 @@ class GetOrderLines
     private function getShippingPriceExclTax(Quote $quote): float
     {
         return round(
-            ($quote->getShippingAddress()->getShippingAmount()
-                - $quote->getShippingAddress()->getShippingDiscountAmount())
+            ($quote->getShippingAddress()->getBaseShippingAmount()
+                - $quote->getShippingAddress()->getBaseShippingDiscountAmount())
             * 100
         );
     }
@@ -167,8 +167,8 @@ class GetOrderLines
     private function getShippingPriceInclTax(Quote $quote): float
     {
         return round(
-            ($quote->getShippingAddress()->getShippingInclTax()
-                - $quote->getShippingAddress()->getShippingDiscountAmount())
+            ($quote->getShippingAddress()->getBaseShippingInclTax()
+                - $quote->getShippingAddress()->getBaseShippingDiscountAmount())
             * 100
         );
     }
@@ -181,9 +181,9 @@ class GetOrderLines
      */
     private function getShippingTaxPercent(Quote $quote)
     {
-        $shippingTaxAmount = $quote->getShippingAddress()->getShippingTaxAmount()
-            + $quote->getShippingAddress()->getShippingDiscountTaxCompensationAmount();
-        $shippingAmount = $quote->getShippingAddress()->getShippingAmount();
+        $shippingTaxAmount = $quote->getShippingAddress()->getBaseShippingTaxAmount()
+            + $quote->getShippingAddress()->getBaseShippingDiscountTaxCompensationAmnt();
+        $shippingAmount = $quote->getShippingAddress()->getBaseShippingAmount();
         return $shippingAmount > 0 ? round(($shippingTaxAmount / $shippingAmount) * 100, 1) : 0;
     }
 
@@ -197,9 +197,9 @@ class GetOrderLines
     private function getRowTotalCreditmemoItemExclTax(CreditmemoItem $creditmemoItem): float
     {
         return round(
-            ($creditmemoItem->getRowTotal()
-                - $creditmemoItem->getDiscountAmount()
-                + $creditmemoItem->getDiscountTaxCompensationAmount())
+            ($creditmemoItem->getBaseRowTotal()
+                - $creditmemoItem->getBaseDiscountAmount()
+                + $creditmemoItem->getBaseDiscountTaxCompensationAmount())
             / $creditmemoItem->getQty() * 100
         ) * $creditmemoItem->getQty();
     }
@@ -214,10 +214,10 @@ class GetOrderLines
     private function getRowTotalCreditmemoItemInclTax(CreditmemoItem $creditmemoItem): float
     {
         return round(
-            ($creditmemoItem->getRowTotal()
-                - $creditmemoItem->getDiscountAmount()
-                + $creditmemoItem->getTaxAmount()
-                + $creditmemoItem->getDiscountTaxCompensationAmount())
+            ($creditmemoItem->getBaseRowTotal()
+                - $creditmemoItem->getBaseDiscountAmount()
+                + $creditmemoItem->getBaseTaxAmount()
+                + $creditmemoItem->getBaseDiscountTaxCompensationAmount())
             / $creditmemoItem->getQty() * 100
         ) * $creditmemoItem->getQty();
     }
@@ -232,8 +232,8 @@ class GetOrderLines
     private function getRowTotalCreditmemoShippingExclTax(CreditmemoInterface $creditmemo): float
     {
         return round(
-            ($creditmemo->getShippingAmount()
-                - $creditmemo->getShippingDiscountAmount())
+            ($creditmemo->getBaseShippingAmount()
+                - $creditmemo->getBaseShippingDiscountAmount())
             * 100
         );
     }
@@ -248,8 +248,8 @@ class GetOrderLines
     private function getRowTotalCreditmemoShippingInclTax(CreditmemoInterface $creditmemo): float
     {
         return round(
-            ($creditmemo->getShippingInclTax()
-                - $creditmemo->getShippingDiscountAmount())
+            ($creditmemo->getBaseShippingInclTax()
+                - $creditmemo->getBaseShippingDiscountAmount())
             * 100
         );
     }

@@ -107,17 +107,17 @@ class RefundOrder
         }
 
         // 2) Check for refunds per amount
-        if ($creditmemo->getAdjustmentPositive() != 0) {
+        if ($creditmemo->getBaseAdjustmentPositive() != 0) {
             $refundData = [
-                'amount' => $creditmemo->getAdjustmentPositive() * 100,
+                'amount' => $creditmemo->getBaseAdjustmentPositive() * 100,
                 'description' => sprintf('(Partial) Refund order %s', $order->getIncrementId()),
                 'invoices' => [
                     [
                         'invoice_uuid' => $transaction->getInvoiceUuid(),
                         'refund_amounts' => [
                             'tax_rate_percentage' => 0,
-                            'total_amount_excl_tax' => $creditmemo->getAdjustmentPositive() * 100,
-                            'total_amount_incl_tax' => $creditmemo->getAdjustmentPositive() * 100,
+                            'total_amount_excl_tax' => $creditmemo->getBaseAdjustmentPositive() * 100,
+                            'total_amount_incl_tax' => $creditmemo->getBaseAdjustmentPositive() * 100,
                             'description' => $comments ?? 'Adjustment Refund'
                         ]
                     ]
@@ -136,8 +136,8 @@ class RefundOrder
      */
     private function checkIfCanRefund(OrderInterface $order, CreditmemoInterface $creditmemo)
     {
-        if (($creditmemo->getShippingAmount() > $order->getShippingAmount())
-            && ($creditmemo->getShippingAmount() != 0)) {
+        if (($creditmemo->getBaseShippingAmount() > $order->getBaseShippingAmount())
+            && ($creditmemo->getBaseShippingAmount() != 0)) {
             $errorMsg = (string)self::SHIPPING_EXCEPTION_MSG;
             throw new LocalizedException(__($errorMsg));
         }
