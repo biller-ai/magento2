@@ -65,6 +65,7 @@ class BillerPlaceOrderRequest implements ResolverInterface
             return [
                 'success' => true,
                 'redirect_url' => $url,
+                'token' => $token,
             ];
         } catch (\Exception $exception) {
             return [

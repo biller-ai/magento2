@@ -215,22 +215,14 @@ class MakeRequest
             ],
             'shipping_address' => $this->getAddressData($quote->getShippingAddress(), $quote->getStoreId()),
             'billing_address' => $this->getAddressData($quote->getBillingAddress(), $quote->getStoreId()),
-            'seller_urls' => [
-                'success_url' => $extraData['seller_urls']['success_url']
-                    ?? $storeUrl . 'biller/checkout/process/token/' . $this->token,
-                'error_url' => $extraData['seller_urls']['error_url']
-                    ?? $storeUrl . 'biller/checkout/process/token/' . $this->token,
-                'cancel_url' => $extraData['seller_urls']['cancel_url']
-                    ?? $storeUrl . 'biller/checkout/process/token/' . $this->token . '/cancel/1/',
-                'pending_url' => $extraData['seller_urls']['pending_url']
-                    ?? $storeUrl . 'biller/checkout/process/token/' . $this->token
-            ],
             'webhook_urls' => [
                 'webhook_url' => $webhookUrl,
             ],
             'extra' => "amount,billing_address,buyer_company,buyer_representative,currency,external_order_uid" .
                 ",external_webshop_uid,order_lines,shipping_address"
         ];
+
+        $data = $this->addSellerUrls($data, $storeUrl, $extraData);
 
         if ($this->configProvider->getStoreLocale($quote->getStoreId()) == 'nl_NL') {
             $data['locale'] = 'nl';
@@ -382,5 +374,48 @@ class MakeRequest
         $this->quoteRepository->save($newQuote);
 
         $this->checkoutSession->replaceQuote($newQuote);
+    }
+
+    private function addSellerUrls(array $data, string $storeUrl, array $extraData): array
+    {
+        $successUrl = $storeUrl . 'biller/checkout/process/token/' . $this->token;
+        $errorUrl = $storeUrl . 'biller/checkout/process/token/' . $this->token;
+        $cancelUrl = $storeUrl . 'biller/checkout/process/token/' . $this->token . '/cancel/1/';
+        $pendingUrl = $storeUrl . 'biller/checkout/process/token/' . $this->token;
+
+        if (isset($extraData['seller_urls']['success_url'])) {
+            $successUrl = $this->enhanceUrl($extraData['seller_urls']['success_url']);
+        }
+        if (isset($extraData['seller_urls']['error_url'])) {
+            $errorUrl = $this->enhanceUrl($extraData['seller_urls']['error_url']);
+        }
+        if (isset($extraData['seller_urls']['cancel_url'])) {
+            $cancelUrl = $this->enhanceUrl($extraData['seller_urls']['cancel_url']);
+        }
+        if (isset($extraData['seller_urls']['pending_url'])) {
+            $pendingUrl = $this->enhanceUrl($extraData['seller_urls']['pending_url']);
+        }
+
+        $data['seller_urls'] = [
+            'success_url' => $successUrl,
+            'error_url' => $errorUrl,
+            'cancel_url' => $cancelUrl,
+            'pending_url' => $pendingUrl,
+        ];
+
+        return $data;
+    }
+
+    private function enhanceUrl(string $url): string
+    {
+        $replacements = [
+            '{{token}}' => $this->token,
+        ];
+
+        return str_replace(
+            array_keys($replacements),
+            array_values($replacements),
+            $url
+        );
     }
 }
