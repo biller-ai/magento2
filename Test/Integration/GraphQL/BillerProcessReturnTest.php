@@ -6,7 +6,9 @@
 
 namespace Biller\Connect\Test\Integration\GraphQL;
 
+use Biller\Connect\Api\Transaction\RepositoryInterface;
 use Biller\Connect\Service\Order\ProcessReturn;
+use Magento\Quote\Model\MaskedQuoteIdToQuoteIdInterface;
 
 class BillerProcessReturnTest extends GraphQLTestCase
 {
@@ -29,11 +31,11 @@ class BillerProcessReturnTest extends GraphQLTestCase
             'status' => 'accepted',
         ]);
 
-        $cartId = $this->prepareGuestCart();
+        $this->prepareGuestCart();
 
         $result = $this->graphQlQuery('
             query {
-                billerProcessReturn(cart_id: "' . $cartId . '") {
+                billerProcessReturn(token: "123abc") {
                     success
                     status
                     message
@@ -64,13 +66,14 @@ class BillerProcessReturnTest extends GraphQLTestCase
             'success' => false,
             'status' => 'cancelled',
             'msg' => ProcessReturn::CANCELLED_MSG,
+            'token' => 'abc123_test',
         ]);
 
-        $cartId = $this->prepareGuestCart();
+        $this->prepareGuestCart();
 
         $result = $this->graphQlQuery('
             query {
-                billerProcessReturn(cart_id: "' . $cartId . '") {
+                billerProcessReturn(token: "abc123_test") {
                     success
                     status
                     message

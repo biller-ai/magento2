@@ -269,4 +269,12 @@ class Repository implements RepositoryInterface
     {
         return $this->resource->isLocked($entity);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkOrderIsPlaced(DataInterface $entity): bool
+    {
+        return $this->resource->isOrderPlaced($entity);
+    }
 }

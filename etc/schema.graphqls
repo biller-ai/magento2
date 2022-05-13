@@ -3,7 +3,7 @@ type Mutation {
 }
 
 type Query {
-    billerProcessReturn(cart_id: String!): BillerProcessReturnOutput @resolver(class: "\\Biller\\Connect\\GraphQL\\Resolver\\BillerProcessReturn")
+    billerProcessReturn(token: String!): BillerProcessReturnOutput @resolver(class: "\\Biller\\Connect\\GraphQL\\Resolver\\BillerProcessReturn")
 }
 
 input BillerPaymentDataInput {
@@ -29,6 +29,7 @@ type BillerPaymentDataOutput {
     success: Boolean!
     redirect_url: String
     message: String
+    token: String
 }
 
 type BillerProcessReturnOutput {

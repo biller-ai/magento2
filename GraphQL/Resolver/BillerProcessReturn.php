@@ -7,13 +7,10 @@
 namespace Biller\Connect\GraphQL\Resolver;
 
 use Biller\Connect\Service\Order\ProcessReturn;
-use Biller\Connect\Service\Transaction\GenerateToken;
 use Magento\Framework\GraphQl\Config\Element\Field;
-use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
-use Magento\Framework\GraphQl\Query\Resolver\Value;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Quote\Model\MaskedQuoteIdToQuoteIdInterface;
 
 class BillerProcessReturn implements ResolverInterface
 {
@@ -22,35 +19,23 @@ class BillerProcessReturn implements ResolverInterface
      */
     private $processReturn;
 
-    /**
-     * @var MaskedQuoteIdToQuoteIdInterface
-     */
-    private $maskedQuoteIdToQuoteId;
-
-    /**
-     * @var GenerateToken
-     */
-    private $generateToken;
-
     public function __construct(
-        ProcessReturn $processReturn,
-        MaskedQuoteIdToQuoteIdInterface $maskedQuoteIdToQuoteId,
-        GenerateToken $generateToken
+        ProcessReturn $processReturn
     ) {
         $this->processReturn = $processReturn;
-        $this->maskedQuoteIdToQuoteId = $maskedQuoteIdToQuoteId;
-        $this->generateToken = $generateToken;
     }
 
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        $quoteId = $this->maskedQuoteIdToQuoteId->execute($args['cart_id']);
-        $token = $this->generateToken->execute($quoteId);
-        $result = $this->processReturn->execute($token);
+        if (!isset($args['token'])) {
+            throw new GraphQlInputException(__('The argument "token" is required'));
+        }
+
+        $result = $this->processReturn->execute($args['token']);
 
         return [
             'success' => $result['success'],
-            'status' => $result['status'],
+            'status' => $result['status'] ?? 'unknown',
             'message' => $result['msg'] ?? null,
         ];
     }
