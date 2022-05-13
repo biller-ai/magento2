@@ -155,7 +155,7 @@ class ProcessWebhook
                     $this->logRepository->addDebugLog('webhook', 'start processing accepted transaction');
                     $this->transactionRepository->lock($transaction);
                     $email = $orderGet['representative']['email'];
-                    if (!$transaction->getOrderId()
+                    if (!$this->transactionRepository->checkOrderIsPlaced($transaction)
                         && ($orderId = $this->placeOrder($quote, $uuid, $orderGet['value'], $email))) {
                         $transaction->setOrderId((int)$orderId)
                             ->setStatus((string)$transactionStatus);
@@ -186,6 +186,8 @@ class ProcessWebhook
      */
     private function placeOrder(CartInterface $quote, string $extOrderId, array $amount, string $email)
     {
+        $this->logRepository->addDebugLog('webhook', 'place order start');
+
         $quote = $this->prepareQuote($quote, $email);
         $orderId = $this->cartManagement->placeOrder($quote->getId());
         $order = $this->orderRepository->get($orderId);
@@ -197,6 +199,7 @@ class ProcessWebhook
 
         $message = (string)self::SETTLEMENT_MSG;
         $this->orderCommentHistory->add($order, __($message, $this->formatPrice($amount)), false);
+        $this->logRepository->addDebugLog('webhook', 'place order end');
 
         return $order->getEntityId();
     }

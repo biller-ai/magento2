@@ -31,7 +31,7 @@ interface RepositoryInterface
     public const COULD_NOT_SAVE_EXCEPTION = 'Could not save the transaction: %1';
 
     /**
-     * Loads a specified quote
+     * Loads a specified transaction
      *
      * @param int $entityId
      *
@@ -41,14 +41,14 @@ interface RepositoryInterface
     public function get(int $entityId): DataInterface;
 
     /**
-     * Return quote object
+     * Return transaction object
      *
      * @return DataInterface
      */
     public function create(): DataInterface;
 
     /**
-     * Retrieves an quote matching the specified criteria.
+     * Retrieves a transaction matching the specified criteria.
      *
      * @param SearchCriteriaInterface $searchCriteria
      *
@@ -78,7 +78,7 @@ interface RepositoryInterface
     public function delete(DataInterface $entity): bool;
 
     /**
-     * Deletes anquote entity by ID
+     * Deletes transaction entity by ID
      *
      * @param int $entityId
      *
@@ -99,6 +99,8 @@ interface RepositoryInterface
     public function save(DataInterface $entity): DataInterface;
 
     /**
+     * Get transaction by Quote ID
+     *
      * @param int $quoteId
      * @param bool $uuidCheck
      * @return DataInterface
@@ -108,6 +110,8 @@ interface RepositoryInterface
     public function getByQuoteId(int $quoteId, bool $uuidCheck = false): DataInterface;
 
     /**
+     * Get transaction by Order ID
+     *
      * @param int $orderId
      *
      * @return DataInterface
@@ -117,6 +121,8 @@ interface RepositoryInterface
     public function getByOrderId(int $orderId): DataInterface;
 
     /**
+     * Get transaction by UUID
+     *
      * @param string $uuid
      *
      * @return DataInterface
@@ -126,6 +132,8 @@ interface RepositoryInterface
     public function getByUuid(string $uuid): DataInterface;
 
     /**
+     * Get transaction by token
+     *
      * @param string $token
      *
      * @return DataInterface
@@ -135,7 +143,7 @@ interface RepositoryInterface
     public function getByToken(string $token): DataInterface;
 
     /**
-     * Lock Transaction
+     * Lock transaction
      *
      * @param DataInterface $entity
      *
@@ -154,7 +162,8 @@ interface RepositoryInterface
      */
     public function unlock(DataInterface $entity): DataInterface;
 
-    /** Check if transaction is locked
+    /**
+     * Check if transaction is locked
      *
      * @param DataInterface $entity
      *
@@ -162,4 +171,14 @@ interface RepositoryInterface
      * @throws LocalizedException
      */
     public function isLocked(DataInterface $entity): bool;
+
+    /**
+     * Check if order is placed for this transaction
+     *
+     * @param DataInterface $entity
+     *
+     * @return bool
+     * @throws LocalizedException
+     */
+    public function checkOrderIsPlaced(DataInterface $entity): bool;
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Biller\Connect\Model\Transaction;
 
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Biller\Connect\Api\Transaction\Data\DataInterface as TransactionData;
 
 class ResourceModel extends AbstractDb
 {
@@ -21,6 +22,22 @@ class ResourceModel extends AbstractDb
     protected function _construct()
     {
         $this->_init('biller_transaction', 'entity_id');
+    }
+
+    /**
+     * Check is entity exists
+     *
+     * @param  int $entityId
+     * @return bool
+     */
+    public function isExists(int $entityId) : bool
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getTable('biller_transaction'), 'entity_id')
+            ->where('entity_id = :entity_id');
+        $bind = [':entity_id' => $entityId];
+        return (bool)$connection->fetchOne($select, $bind);
     }
 
     /**
@@ -88,10 +105,12 @@ class ResourceModel extends AbstractDb
     }
 
     /**
-     * @param $transaction
+     * Lock transaction
+     *
+     * @param TransactionData $transaction
      * @return bool
      */
-    public function lockTransaction($transaction)
+    public function lockTransaction(TransactionData $transaction): bool
     {
         $connection = $this->getConnection();
         return (bool)$connection->update(
@@ -102,14 +121,32 @@ class ResourceModel extends AbstractDb
     }
 
     /**
-     * @param $transaction
+     * Check if transaction is locked
+     *
+     * @param TransactionData $transaction
      * @return bool
      */
-    public function isLocked($transaction): bool
+    public function isLocked(TransactionData $transaction): bool
     {
         $connection = $this->getConnection();
         $select = $connection->select()
             ->from($this->getTable('biller_transaction'), 'is_locked')
+            ->where('entity_id = :entity_id');
+        $bind = [':entity_id' => $transaction->getEntityId()];
+        return (bool)$connection->fetchOne($select, $bind);
+    }
+
+    /**
+     * Check if order is placed for transaction
+     *
+     * @param TransactionData $transaction
+     * @return bool
+     */
+    public function isOrderPlaced(TransactionData $transaction): bool
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getTable('biller_transaction'), 'order_id')
             ->where('entity_id = :entity_id');
         $bind = [':entity_id' => $transaction->getEntityId()];
         return (bool)$connection->fetchOne($select, $bind);
