@@ -17,6 +17,7 @@ interface SettingsInterface extends DebugInterface
     public const BILLER_USE_SEPARATE_HOUSENUMBER = 'biller_connect/settings/separate_housenumber';
     public const BILLER_PAYMENT_LINK_DURATION = 'biller_connect/settings/payment_link_duration';
     public const BILLER_ORDER_REQUEST_LABEL = 'biller_connect/settings/order_request_label';
+    public const BILLER_EMAIL_SENDER = 'biller_connect/settings/identity';
 
     /**
      * Check if housenumber is set as second street
@@ -44,4 +45,13 @@ interface SettingsInterface extends DebugInterface
      * @return string
      */
     public function getOrderRequestLabel(int $storeId = null): string;
+
+    /**
+     * Get email sender
+     *
+     * @param int|null $storeId
+     *
+     * @return array
+     */
+    public function getEmailSender(int $storeId = null): array;
 }

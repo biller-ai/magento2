@@ -25,5 +25,10 @@
             <comment><![CDATA[Time after which the link will be unavailable.]]></comment>
             <config_path>biller_connect/settings/payment_link_duration</config_path>
         </field>
+        <field id="identity" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+            <label>Payment Link Email Sender</label>
+            <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+            <config_path>biller_connect/settings/identity</config_path>
+        </field>
     </group>
 </include>

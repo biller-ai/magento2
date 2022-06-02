@@ -17,6 +17,7 @@
             <settings>
                 <payment_link_duration>900</payment_link_duration>
                 <order_request_label>Webshop</order_request_label>
+                <identity>sales</identity>
             </settings>
         </biller_connect>
         <payment>
