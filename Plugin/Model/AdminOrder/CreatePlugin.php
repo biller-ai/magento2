@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Biller\Connect\Plugin\Model\AdminOrder;
 
 use Biller\Connect\Api\Log\RepositoryInterface as LogRepository;
+use Biller\Connect\Api\Config\RepositoryInterface as ConfigRepository;
 use Biller\Connect\Api\Transaction\RepositoryInterface as TransactionRepository;
 use Biller\Connect\Service\Order\MakeRequest as MakeOrderRequest;
 use Magento\Framework\App\Area;
@@ -28,6 +29,10 @@ class CreatePlugin
      * @var LogRepository
      */
     private $logRepository;
+    /**
+     * @var ConfigRepository
+     */
+    private $configRepository;
     /**
      * @var MakeOrderRequest
      */
@@ -62,6 +67,7 @@ class CreatePlugin
      *
      * @param MakeOrderRequest $orderRequest
      * @param LogRepository $logRepository
+     * @param ConfigRepository $configRepository
      * @param TransactionRepository $transactionRepository
      * @param OrderRepositoryInterface $orderRepository
      * @param StateInterface $inlineTranslation
@@ -72,6 +78,7 @@ class CreatePlugin
     public function __construct(
         MakeOrderRequest $orderRequest,
         LogRepository $logRepository,
+        ConfigRepository $configRepository,
         TransactionRepository $transactionRepository,
         OrderRepositoryInterface $orderRepository,
         StateInterface $inlineTranslation,
@@ -81,6 +88,7 @@ class CreatePlugin
     ) {
         $this->orderRequest = $orderRequest;
         $this->logRepository = $logRepository;
+        $this->configRepository = $configRepository;
         $this->transactionRepository = $transactionRepository;
         $this->orderRepository = $orderRepository;
         $this->inlineTranslation = $inlineTranslation;
@@ -149,10 +157,7 @@ class CreatePlugin
     {
         try {
             $this->inlineTranslation->suspend();
-            $sender = [
-                'name' => $this->escaper->escapeHtml('Biller no-reply'),
-                'email' => $this->escaper->escapeHtml('no-reply@biller.ai'),
-            ];
+            $sender = $this->configRepository->getEmailSender();
 
             $transport = $this->transportBuilder
                 ->setTemplateIdentifier('biller_payment_link_email_template')

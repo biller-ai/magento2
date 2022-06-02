@@ -38,4 +38,16 @@ class SettingsRepository extends DebugRepository implements SettingsInterface
     {
         return (string)$this->getStoreValue(self::BILLER_ORDER_REQUEST_LABEL, $storeId);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEmailSender(int $storeId = null): array
+    {
+        $identity = $this->getStoreValue(self::BILLER_EMAIL_SENDER, $storeId);
+        return [
+            'name' => $this->getStoreValue('trans_email/ident_' . $identity . '/name', $storeId),
+            'email' => $this->getStoreValue('trans_email/ident_' . $identity . '/email', $storeId)
+        ];
+    }
 }

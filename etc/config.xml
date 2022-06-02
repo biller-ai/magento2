@@ -10,13 +10,14 @@
     <default>
         <biller_connect>
             <general>
-                <version>v1.4.1</version>
+                <version>v1.4.2</version>
                 <enable>0</enable>
                 <debug>0</debug>
             </general>
             <settings>
                 <payment_link_duration>900</payment_link_duration>
                 <order_request_label>Webshop</order_request_label>
+                <identity>sales</identity>
             </settings>
         </biller_connect>
         <payment>
