@@ -118,7 +118,7 @@ class RefundOrder
                             'tax_rate_percentage' => 0,
                             'total_amount_excl_tax' => $creditmemo->getBaseAdjustmentPositive() * 100,
                             'total_amount_incl_tax' => $creditmemo->getBaseAdjustmentPositive() * 100,
-                            'description' => $comments ?? 'Adjustment Refund'
+                            'description' => $comments ?: 'Adjustment Refund'
                         ]
                     ]
                 ]
