@@ -201,4 +201,12 @@
         <plugin name="biller_quote_control"
                 type="Biller\Connect\Plugin\Model\Quote\ChangeQuoteControlPlugin"/>
     </type>
+
+    <type name="Biller\Connect\Service\Order\Lines\OrderLinesGenerator">
+        <arguments>
+            <argument name="generators" xsi:type="array">
+                <item name="foomanTotal" xsi:type="object">Biller\Connect\Service\Order\Lines\Generator\FoomanTotals</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

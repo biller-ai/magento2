@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Biller\Connect\Service\Order;
 
-use Biller\Connect\Api\Log\RepositoryInterface as LogRepository;
+use Biller\Connect\Service\Order\Lines\OrderLinesGenerator;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Sales\Api\Data\CreditmemoInterface;
@@ -18,22 +18,17 @@ use Magento\Sales\Model\Order\Creditmemo\Item as CreditmemoItem;
  */
 class GetOrderLines
 {
-
     public const SHIPPING_COST_LINE = 'shipping cost';
 
     /**
-     * @var LogRepository
+     * @var OrderLinesGenerator
      */
-    private $logRepository;
+    private $orderLinesGenerator;
 
-    /**
-     * GetOrderLines constructor.
-     * @param LogRepository $logRepository
-     */
     public function __construct(
-        LogRepository $logRepository
+        OrderLinesGenerator $orderLinesGenerator
     ) {
-        $this->logRepository = $logRepository;
+        $this->orderLinesGenerator = $orderLinesGenerator;
     }
 
     /**
@@ -59,7 +54,6 @@ class GetOrderLines
             ];
         }
 
-        $totalIncl += $this->getShippingPriceInclTax($quote);
         $orderLines[] = [
             'quantity' => 1,
             'product_id' => self::SHIPPING_COST_LINE,
@@ -69,6 +63,8 @@ class GetOrderLines
             'product_price_incl_tax' => $this->getShippingPriceInclTax($quote),
             'product_tax_rate_percentage' => $this->getShippingTaxPercent($quote),
         ];
+
+        $orderLines = array_merge($orderLines, $this->orderLinesGenerator->execute($quote, $orderLines));
 
         return $orderLines;
     }
